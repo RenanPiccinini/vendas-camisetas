@@ -29,7 +29,7 @@
                 <article class="product-card reveal" data-reveal data-category="{{ $product->featured ? 'featured' : (str_contains(strtolower($product->team), 'retr') ? 'retrô' : 'all') }}">
                     <a class="product-visual" href="{{ route('store.show', $product) }}">
                         @if($product->compare_price)<span class="product-badge">Edição especial</span>@endif
-                        <img src="{{ $product->image_url ?: asset('images/logo.jpg') }}" alt="{{ $product->name }}" loading="lazy">
+                        <img src="{{ $product->image_source ?: asset('images/logo.jpg') }}" alt="{{ $product->name }}" loading="lazy">
                         <span class="view-product">Ver detalhes <b>↗</b></span>
                     </a>
                     <div class="product-info"><div><span class="product-team">{{ $product->team }} @if($product->season) · {{ $product->season }} @endif</span><h3>{{ $product->name }}</h3></div><div class="price-block"><strong>{{ $product->formatted_price }}</strong>@if($product->compare_price)<del>R$ {{ number_format((float)$product->compare_price, 2, ',', '.') }}</del>@endif</div></div>
@@ -39,7 +39,7 @@
                             'name' => $product->name,
                             'team' => $product->team,
                             'price' => (float) $product->price,
-                            'image' => $product->image_url ?: asset('images/logo.jpg'),
+                            'image' => $product->image_source ?: asset('images/logo.jpg'),
                             'sizes' => $product->sizes ?: ['P', 'M', 'G', 'GG'],
                         ];
                     @endphp
@@ -61,14 +61,14 @@
             <div class="mantos-display" data-mantos-display>
                 <span class="display-tag">EM DESTAQUE</span>
                 <div class="display-glow"></div>
-                <img class="mantos-main-image" data-mantos-image src="{{ optional($featuredMantos->first())->image_url ?: asset('images/logo.jpg') }}" alt="{{ optional($featuredMantos->first())->name ?: 'Manto em destaque' }}">
+                <img class="mantos-main-image" data-mantos-image src="{{ optional($featuredMantos->first())->image_source ?: asset('images/logo.jpg') }}" alt="{{ optional($featuredMantos->first())->name ?: 'Manto em destaque' }}">
                 <div class="display-caption"><span data-mantos-team>{{ optional($featuredMantos->first())->team ?: 'Paraíso dos Mantos' }}</span><strong data-mantos-name>{{ optional($featuredMantos->first())->name ?: 'Escolha seu manto' }}</strong></div>
                 <span class="size-chip">P · M · G · GG</span>
             </div>
             <div class="mantos-selector" role="tablist" aria-label="Selecionar manto">
                 @foreach($featuredMantos as $mantosProduct)
-                    <button class="mantos-thumb {{ $loop->first ? 'active' : '' }}" type="button" role="tab" aria-selected="{{ $loop->first ? 'true' : 'false' }}" data-mantos-thumb data-image="{{ $mantosProduct->image_url ?: asset('images/logo.jpg') }}" data-name="{{ $mantosProduct->name }}" data-team="{{ $mantosProduct->team }}" data-price="{{ $mantosProduct->formatted_price }}">
-                        <img src="{{ $mantosProduct->image_url ?: asset('images/logo.jpg') }}" alt="{{ $mantosProduct->name }}">
+                    <button class="mantos-thumb {{ $loop->first ? 'active' : '' }}" type="button" role="tab" aria-selected="{{ $loop->first ? 'true' : 'false' }}" data-mantos-thumb data-image="{{ $mantosProduct->image_source ?: asset('images/logo.jpg') }}" data-name="{{ $mantosProduct->name }}" data-team="{{ $mantosProduct->team }}" data-price="{{ $mantosProduct->formatted_price }}">
+                        <img src="{{ $mantosProduct->image_source ?: asset('images/logo.jpg') }}" alt="{{ $mantosProduct->name }}">
                         <span>{{ $mantosProduct->team }}</span>
                     </button>
                 @endforeach

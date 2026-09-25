@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ProductController extends Controller
@@ -36,19 +37,30 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product): RedirectResponse
     {
-        $product->update($this->validated($request));
+        $oldImagePath = $product->image_path;
+        $data = $this->validated($request, $product);
+        $product->update($data);
+
+        if ($oldImagePath && $oldImagePath !== $product->image_path) {
+            Storage::disk('public')->delete($oldImagePath);
+        }
 
         return redirect()->route('admin.products.index')->with('success', 'Camiseta atualizada com sucesso.');
     }
 
     public function destroy(Product $product): RedirectResponse
     {
+        $imagePath = $product->image_path;
         $product->delete();
+
+        if ($imagePath) {
+            Storage::disk('public')->delete($imagePath);
+        }
 
         return redirect()->route('admin.products.index')->with('success', 'Camiseta removida com sucesso.');
     }
 
-    private function validated(Request $request): array
+    private function validated(Request $request, ?Product $product = null): array
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:120'],
@@ -58,6 +70,7 @@ class ProductController extends Controller
             'price' => ['required', 'numeric', 'min:0'],
             'compare_price' => ['nullable', 'numeric', 'min:0'],
             'image_url' => ['nullable', 'url', 'max:500'],
+            'image_file' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:5120'],
             'sizes_text' => ['nullable', 'string', 'max:100'],
             'stock' => ['required', 'integer', 'min:0'],
             'featured' => ['nullable', 'boolean'],
@@ -68,6 +81,14 @@ class ProductController extends Controller
         unset($data['sizes_text']);
         $data['featured'] = $request->boolean('featured');
         $data['active'] = $request->boolean('active');
+
+        if ($request->hasFile('image_file')) {
+            $data['image_path'] = $request->file('image_file')->store('products', 'public');
+        } elseif ($request->filled('image_url')) {
+            $data['image_path'] = null;
+        } elseif ($product) {
+            $data['image_path'] = $product->image_path;
+        }
 
         return $data;
     }
