@@ -7,6 +7,7 @@ use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class ProductController extends Controller
@@ -62,6 +63,17 @@ class ProductController extends Controller
 
     private function validated(Request $request, ?Product $product = null): array
     {
+        if (! $request->has('sizes') && $request->filled('sizes_text')) {
+            $request->merge([
+                'sizes' => array_values(array_filter(preg_split('/[\s,]+/', trim((string) $request->input('sizes_text'))))),
+            ]);
+        }
+
+        $request->merge([
+            'price' => $this->normalizeMoney($request->input('price')),
+            'compare_price' => $this->normalizeMoney($request->input('compare_price')),
+        ]);
+
         $data = $request->validate([
             'name' => ['required', 'string', 'max:120'],
             'team' => ['required', 'string', 'max:80'],
@@ -71,14 +83,14 @@ class ProductController extends Controller
             'compare_price' => ['nullable', 'numeric', 'min:0'],
             'image_url' => ['nullable', 'url', 'max:500'],
             'image_file' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:5120'],
-            'sizes_text' => ['nullable', 'string', 'max:100'],
+            'sizes' => ['required', 'array', 'min:1'],
+            'sizes.*' => ['string', Rule::in(['PP', 'P', 'M', 'G', 'GG', 'XG'])],
             'stock' => ['required', 'integer', 'min:0'],
             'featured' => ['nullable', 'boolean'],
             'active' => ['nullable', 'boolean'],
         ]);
 
-        $data['sizes'] = array_values(array_filter(preg_split('/[\s,]+/', trim($data['sizes_text'] ?? 'P M G GG'))));
-        unset($data['sizes_text']);
+        $data['sizes'] = array_values(array_unique($data['sizes']));
         $data['featured'] = $request->boolean('featured');
         $data['active'] = $request->boolean('active');
 
@@ -91,5 +103,23 @@ class ProductController extends Controller
         }
 
         return $data;
+    }
+
+    private function normalizeMoney(mixed $value): ?string
+    {
+        if ($value === null || trim((string) $value) === '') {
+            return null;
+        }
+
+        $value = trim((string) $value);
+        $value = preg_replace('/[^\d,.-]/', '', $value);
+
+        if (str_contains($value, ',')) {
+            $value = str_replace('.', '', $value);
+
+            return str_replace(',', '.', $value);
+        }
+
+        return $value;
     }
 }

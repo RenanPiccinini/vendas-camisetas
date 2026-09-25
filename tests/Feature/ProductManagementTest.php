@@ -104,6 +104,47 @@ class ProductManagementTest extends TestCase
         $this->assertDatabaseMissing('products', ['id' => $product->id]);
     }
 
+    public function test_admin_can_create_product_with_brazilian_money_and_selected_sizes(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->post(route('admin.products.store'), $this->productData([
+            'price' => 'R$ 1.234,56',
+            'compare_price' => 'R$ 1.499,90',
+            'sizes' => ['PP', 'M', 'XG'],
+        ]))->assertRedirect(route('admin.products.index'));
+
+        $product = Product::query()->firstOrFail();
+
+        $this->assertSame('1234.56', (string) $product->price);
+        $this->assertSame('1499.90', (string) $product->compare_price);
+        $this->assertSame(['PP', 'M', 'XG'], $product->sizes);
+    }
+
+    public function test_admin_can_update_product_with_unformatted_decimal_price(): void
+    {
+        $user = User::factory()->create();
+        $product = Product::query()->create([
+            'name' => 'Produto existente',
+            'team' => 'Time existente',
+            'price' => '100.00',
+            'sizes' => ['P', 'M'],
+            'stock' => 5,
+            'active' => true,
+        ]);
+
+        $this->actingAs($user)->put(route('admin.products.update', $product), $this->productData([
+            'price' => '199.90',
+            'compare_price' => '229.90',
+            'sizes' => ['G', 'GG'],
+        ]))->assertRedirect(route('admin.products.index'));
+
+        $product->refresh();
+
+        $this->assertSame('199.90', (string) $product->price);
+        $this->assertSame(['G', 'GG'], $product->sizes);
+    }
+
     private function productData(array $overrides = []): array
     {
         return array_merge([
@@ -113,7 +154,7 @@ class ProductManagementTest extends TestCase
             'description' => 'Descrição da camiseta de teste.',
             'price' => '199.90',
             'compare_price' => '229.90',
-            'sizes_text' => 'P M G GG',
+            'sizes' => ['P', 'M', 'G', 'GG'],
             'stock' => '10',
             'featured' => '1',
             'active' => '1',

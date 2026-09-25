@@ -66,6 +66,40 @@ document.addEventListener('DOMContentLoaded', () => {
     }));
     document.querySelectorAll('.size-button').forEach(button => button.addEventListener('click', () => { button.parentElement.querySelectorAll('.size-button').forEach(item => item.classList.remove('selected')); button.classList.add('selected'); }));
 
+    const moneyInputs = document.querySelectorAll('[data-money-input]');
+    const formatMoneyInput = (input, initial = false) => {
+        const raw = input.value.trim();
+        if (!raw) {
+            input.value = '';
+            return;
+        }
+
+        let digits;
+        if (initial && raw.includes(',')) {
+            digits = raw.replace(/\D/g, '');
+        } else if (initial && /^\d+\.\d{1,2}$/.test(raw)) {
+            digits = raw.replace('.', '');
+        } else {
+            digits = raw.replace(/\D/g, '');
+        }
+
+        if (!digits) {
+            input.value = '';
+            return;
+        }
+
+        input.value = new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+        }).format(Number(digits) / 100);
+    };
+
+    moneyInputs.forEach(input => {
+        formatMoneyInput(input, true);
+        input.addEventListener('input', () => formatMoneyInput(input));
+        input.addEventListener('blur', () => formatMoneyInput(input));
+    });
+
     const home = document.querySelector('[data-page="store-home"]');
     if (!home) return;
 
