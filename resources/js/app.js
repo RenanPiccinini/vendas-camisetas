@@ -56,16 +56,7 @@ window.ParaísoCart = {
     }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-    window.ParaísoCart.render();
-    document.querySelectorAll('.filter').forEach(button => button.addEventListener('click', () => {
-        document.querySelectorAll('.filter').forEach(item => item.classList.remove('active'));
-        button.classList.add('active');
-        const filter = button.dataset.filter;
-        document.querySelectorAll('.product-card').forEach(card => { card.style.display = filter === 'all' || card.dataset.category === filter ? '' : 'none'; });
-    }));
-    document.querySelectorAll('.size-button').forEach(button => button.addEventListener('click', () => { button.parentElement.querySelectorAll('.size-button').forEach(item => item.classList.remove('selected')); button.classList.add('selected'); }));
-
+const initializeMoneyInputs = () => {
     const moneyInputs = document.querySelectorAll('[data-money-input]');
     const formatMoneyInput = (input, initial = false) => {
         const raw = input.value.trim();
@@ -95,10 +86,25 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     moneyInputs.forEach(input => {
+        if (input.dataset.moneyInitialized) return;
+
+        input.dataset.moneyInitialized = 'true';
         formatMoneyInput(input, true);
         input.addEventListener('input', () => formatMoneyInput(input));
         input.addEventListener('blur', () => formatMoneyInput(input));
     });
+};
+
+const initializePage = () => {
+    initializeMoneyInputs();
+    window.ParaísoCart.render();
+    document.querySelectorAll('.filter').forEach(button => button.addEventListener('click', () => {
+        document.querySelectorAll('.filter').forEach(item => item.classList.remove('active'));
+        button.classList.add('active');
+        const filter = button.dataset.filter;
+        document.querySelectorAll('.product-card').forEach(card => { card.style.display = filter === 'all' || card.dataset.category === filter ? '' : 'none'; });
+    }));
+    document.querySelectorAll('.size-button').forEach(button => button.addEventListener('click', () => { button.parentElement.querySelectorAll('.size-button').forEach(item => item.classList.remove('selected')); button.classList.add('selected'); }));
 
     const home = document.querySelector('[data-page="store-home"]');
     if (!home) return;
@@ -206,4 +212,12 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }, { passive: true });
     }
-});
+};
+
+initializeMoneyInputs();
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializePage, { once: true });
+} else {
+    initializePage();
+}
