@@ -43,7 +43,8 @@ class ProductManagementTest extends TestCase
 
         $this->assertNotNull($product->image_path);
         Storage::disk('public')->assertExists($product->image_path);
-        $this->assertStringContainsString('/storage/products/', $product->image_source);
+        $this->assertSame(route('store.image', $product), $product->image_source);
+        $this->get(route('store.image', $product))->assertOk();
     }
 
     public function test_uploaded_image_has_priority_over_external_url(): void

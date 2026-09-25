@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ProductController extends Controller
 {
@@ -20,5 +22,12 @@ class ProductController extends Controller
         abort_unless($product->active, 404);
 
         return view('store.show', compact('product'));
+    }
+
+    public function image(Product $product): BinaryFileResponse
+    {
+        abort_unless($product->image_path && Storage::disk('public')->exists($product->image_path), 404);
+
+        return response()->file(Storage::disk('public')->path($product->image_path));
     }
 }

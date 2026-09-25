@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
@@ -32,7 +31,7 @@ class Product extends Model
     protected function imageSource(): Attribute
     {
         return Attribute::get(fn () => $this->image_path
-            ? Storage::disk('public')->url($this->image_path)
+            ? route('store.image', $this)
             : $this->image_url
         );
     }
