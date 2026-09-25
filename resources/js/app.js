@@ -66,16 +66,43 @@ document.addEventListener('DOMContentLoaded', () => {
     }));
     document.querySelectorAll('.size-button').forEach(button => button.addEventListener('click', () => { button.parentElement.querySelectorAll('.size-button').forEach(item => item.classList.remove('selected')); button.classList.add('selected'); }));
 
-    const mantosStage = document.querySelector('[data-mantos-stage]');
-    const mantosDisplay = document.querySelector('[data-mantos-display]');
-    const mantosImage = document.querySelector('[data-mantos-image]');
-    const mantosName = document.querySelector('[data-mantos-name]');
-    const mantosTeam = document.querySelector('[data-mantos-team]');
-    const mantosPrice = document.querySelector('[data-mantos-price]');
-    const mantosThumbs = document.querySelectorAll('[data-mantos-thumb]');
+    const home = document.querySelector('[data-page="store-home"]');
+    if (!home) return;
+
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const coarsePointer = window.matchMedia('(pointer: coarse)');
+    const reducedMotion = () => motionQuery.matches || coarsePointer.matches;
+    const revealItems = home.querySelectorAll('.reveal, [data-reveal]');
+
+    home.classList.add('motion-ready');
+    const revealAll = () => revealItems.forEach(item => item.classList.add('is-visible'));
+    if (motionQuery.matches || !('IntersectionObserver' in window)) {
+        revealAll();
+    } else {
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+            });
+        }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+        revealItems.forEach(item => observer.observe(item));
+    }
+
+    if (!motionQuery.matches) {
+        home.classList.add('hero-ready');
+    }
+
+    const mantosStage = home.querySelector('[data-mantos-stage]');
+    const mantosDisplay = home.querySelector('[data-mantos-display]');
+    const mantosImage = home.querySelector('[data-mantos-image]');
+    const mantosName = home.querySelector('[data-mantos-name]');
+    const mantosTeam = home.querySelector('[data-mantos-team]');
+    const mantosPrice = home.querySelector('[data-mantos-price]');
+    const mantosThumbs = home.querySelectorAll('[data-mantos-thumb]');
 
     if (mantosStage && mantosDisplay && mantosImage && mantosName && mantosTeam && mantosPrice) {
-        const selectManto = (thumb) => {
+        const selectManto = thumb => {
             mantosThumbs.forEach(item => {
                 const selected = item === thumb;
                 item.classList.toggle('active', selected);
@@ -89,21 +116,60 @@ document.addEventListener('DOMContentLoaded', () => {
                 mantosTeam.textContent = thumb.dataset.team;
                 mantosPrice.textContent = thumb.dataset.price;
                 mantosImage.style.opacity = '1';
-            }, 150);
+            }, motionQuery.matches ? 0 : 150);
         };
 
         mantosThumbs.forEach(thumb => thumb.addEventListener('click', () => selectManto(thumb)));
 
-        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        if (!reducedMotion()) {
+            let frame = 0;
+            let bounds = mantosStage.getBoundingClientRect();
+            let pointer = { x: 0, y: 0 };
+            const resetTilt = () => {
+                mantosDisplay.style.setProperty('--tilt-x', '3deg');
+                mantosDisplay.style.setProperty('--tilt-y', '-10deg');
+            };
+            const applyTilt = () => {
+                frame = 0;
+                const rotateY = ((pointer.x - bounds.left) / bounds.width - 0.5) * 7;
+                const rotateX = ((pointer.y - bounds.top) / bounds.height - 0.5) * -5;
+                mantosDisplay.style.setProperty('--tilt-x', `${rotateX}deg`);
+                mantosDisplay.style.setProperty('--tilt-y', `${rotateY}deg`);
+            };
             mantosStage.addEventListener('pointermove', event => {
-                const bounds = mantosStage.getBoundingClientRect();
-                const rotateY = ((event.clientX - bounds.left) / bounds.width - 0.5) * 7;
-                const rotateX = ((event.clientY - bounds.top) / bounds.height - 0.5) * -5;
-                mantosDisplay.style.transform = `translate(-50%, -50%) rotateY(${rotateY}deg) rotateX(${rotateX}deg)`;
-            });
-            mantosStage.addEventListener('pointerleave', () => {
-                mantosDisplay.style.transform = 'translate(-50%, -50%) rotateY(-10deg) rotateX(3deg)';
-            });
+                if (event.pointerType === 'touch') return;
+                pointer = { x: event.clientX, y: event.clientY };
+                if (!frame) frame = requestAnimationFrame(applyTilt);
+            }, { passive: true });
+            mantosStage.addEventListener('pointerleave', resetTilt, { passive: true });
+            window.addEventListener('resize', () => { bounds = mantosStage.getBoundingClientRect(); }, { passive: true });
         }
+    }
+
+    const parallaxItems = home.querySelectorAll('[data-parallax]');
+    if (parallaxItems.length && !reducedMotion()) {
+        let frame = 0;
+        let pointer = { x: 0, y: 0 };
+        const updateParallax = () => {
+            frame = 0;
+            parallaxItems.forEach(item => {
+                const bounds = item.parentElement.getBoundingClientRect();
+                const x = ((pointer.x - bounds.left) / bounds.width - 0.5) * 14;
+                const y = ((pointer.y - bounds.top) / bounds.height - 0.5) * 10;
+                item.style.setProperty('--parallax-x', `${x}px`);
+                item.style.setProperty('--parallax-y', `${y}px`);
+            });
+        };
+        home.addEventListener('pointermove', event => {
+            if (event.pointerType === 'touch') return;
+            pointer = { x: event.clientX, y: event.clientY };
+            if (!frame) frame = requestAnimationFrame(updateParallax);
+        }, { passive: true });
+        home.addEventListener('pointerleave', () => {
+            parallaxItems.forEach(item => {
+                item.style.setProperty('--parallax-x', '0px');
+                item.style.setProperty('--parallax-y', '0px');
+            });
+        }, { passive: true });
     }
 });

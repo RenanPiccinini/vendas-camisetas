@@ -1,8 +1,9 @@
 @extends('layouts.store')
 
 @section('content')
-<main>
+<main data-page="store-home">
     <section class="hero-section">
+
         <div class="hero-glow"></div>
         <div class="hero-copy reveal">
             <span class="eyebrow">DESDE 2026 · FUTEBOL COM IDENTIDADE</span>
@@ -25,7 +26,7 @@
         <div class="filter-row"><button class="filter active" data-filter="all">Todos</button><button class="filter" data-filter="featured">Em destaque</button><button class="filter" data-filter="retrô">Retrô</button><span class="product-count">{{ $products->count() }} peças disponíveis</span></div>
         <div class="product-grid" id="product-grid">
             @forelse($products as $product)
-                <article class="product-card reveal" data-category="{{ $product->featured ? 'featured' : (str_contains(strtolower($product->team), 'retr') ? 'retrô' : 'all') }}">
+                <article class="product-card reveal" data-reveal data-category="{{ $product->featured ? 'featured' : (str_contains(strtolower($product->team), 'retr') ? 'retrô' : 'all') }}">
                     <a class="product-visual" href="{{ route('store.show', $product) }}">
                         @if($product->compare_price)<span class="product-badge">Edição especial</span>@endif
                         <img src="{{ $product->image_url ?: asset('images/logo.jpg') }}" alt="{{ $product->name }}" loading="lazy">
@@ -84,18 +85,18 @@
             <a class="text-link" href="#colecao">Explorar a curadoria <span>↗</span></a>
         </div>
         <div class="story-facts">
-            <article class="story-fact"><strong>{{ str_pad($products->count(), 2, '0', STR_PAD_LEFT) }}</strong><span>clubes na coleção</span><p>Uma seleção enxuta para quem prefere escolher um manto com história.</p></article>
-            <article class="story-fact"><strong>01</strong><span>conversa para comprar</span><p>Você escolhe a peça, confirma os detalhes e fala diretamente com nossa equipe.</p></article>
-            <article class="story-fact"><strong>100%</strong><span>olhar de torcedor</span><p>Atendimento próximo, sem complicação e com atenção ao tamanho certo.</p></article>
+            <article class="story-fact" data-reveal><strong>{{ str_pad($products->count(), 2, '0', STR_PAD_LEFT) }}</strong><span>clubes na coleção</span><p>Uma seleção enxuta para quem prefere escolher um manto com história.</p></article>
+            <article class="story-fact" data-reveal><strong>01</strong><span>conversa para comprar</span><p>Você escolhe a peça, confirma os detalhes e fala diretamente com nossa equipe.</p></article>
+            <article class="story-fact" data-reveal><strong>100%</strong><span>olhar de torcedor</span><p>Atendimento próximo, sem complicação e com atenção ao tamanho certo.</p></article>
         </div>
     </section>
 
     <section class="how-section section-shell" id="como-comprar">
         <div class="section-heading reveal"><div><span class="eyebrow">DO PRIMEIRO CLIQUE À ENTREGA</span><h2>Comprar seu manto<br><em>é simples.</em></h2></div><p>Monte sua seleção com calma. Quando estiver tudo certo, nossa equipe continua o atendimento pelo WhatsApp.</p></div>
         <div class="steps-grid">
-            <article class="step-card"><span class="step-number">01</span><div class="step-icon">◌</div><h3>Escolha o clube</h3><p>Conheça os modelos disponíveis, veja as fotos e abra os detalhes da camisa que chamou sua atenção.</p><a href="#colecao">Ver coleção <span>↗</span></a></article>
-            <article class="step-card step-card-highlight"><span class="step-number">02</span><div class="step-icon">＋</div><h3>Defina o tamanho</h3><p>Selecione P, M, G ou GG na página do produto e adicione a quantidade desejada ao carrinho.</p><a href="#tamanhos">Consultar tamanhos <span>↓</span></a></article>
-            <article class="step-card"><span class="step-number">03</span><div class="step-icon">↗</div><h3>Finalize no WhatsApp</h3><p>Confira seu pedido, clique em finalizar e receba nossa orientação sobre pagamento e entrega.</p><a href="https://wa.me/5535998135255" target="_blank" rel="noopener">Falar com a equipe <span>↗</span></a></article>
+            <article class="step-card" data-reveal><span class="step-number">01</span><div class="step-icon">◌</div><h3>Escolha o clube</h3><p>Conheça os modelos disponíveis, veja as fotos e abra os detalhes da camisa que chamou sua atenção.</p><a href="#colecao">Ver coleção <span>↗</span></a></article>
+            <article class="step-card step-card-highlight" data-reveal><span class="step-number">02</span><div class="step-icon">＋</div><h3>Defina o tamanho</h3><p>Selecione P, M, G ou GG na página do produto e adicione a quantidade desejada ao carrinho.</p><a href="#tamanhos">Consultar tamanhos <span>↓</span></a></article>
+            <article class="step-card" data-reveal><span class="step-number">03</span><div class="step-icon">↗</div><h3>Finalize no WhatsApp</h3><p>Confira seu pedido, clique em finalizar e receba nossa orientação sobre pagamento e entrega.</p><a href="https://wa.me/5535998135255" target="_blank" rel="noopener">Falar com a equipe <span>↗</span></a></article>
         </div>
     </section>
 
@@ -106,7 +107,7 @@
             <p>Se você já conhece a modelagem que usa, escolha o mesmo tamanho. Na dúvida, fale com a equipe antes de finalizar: ajudamos você a encontrar o caimento ideal.</p>
             <div class="size-table" role="list" aria-label="Tamanhos disponíveis"><span role="listitem">P <small>menor</small></span><span role="listitem">M <small>regular</small></span><span role="listitem">G <small>amplo</small></span><span role="listitem">GG <small>extra</small></span></div>
         </div>
-        <div class="care-guide">
+        <div class="care-guide" data-reveal>
             <span class="eyebrow">LONGEVIDADE DO MANTO</span>
             <h3>Cuide da sua camisa como uma peça de coleção.</h3>
             <ul><li><b>01</b><span>Lave do avesso e prefira água fria.</span></li><li><b>02</b><span>Evite alvejante e secadora em alta temperatura.</span></li><li><b>03</b><span>Seque à sombra para preservar cores e detalhes.</span></li></ul>
@@ -114,7 +115,7 @@
         </div>
     </section>
 
-    <section class="service-section section-shell"><div class="service-item"><span>01</span><h3>Curadoria real</h3><p>Peças escolhidas com olhar de torcedor.</p></div><div class="service-item"><span>02</span><h3>Atendimento próximo</h3><p>Fale direto com quem entende de manto.</p></div><div class="service-item"><span>03</span><h3>Compra simples</h3><p>Escolha, mande no WhatsApp e pronto.</p></div></section>
+    <section class="service-section section-shell" data-reveal-group><div class="service-item" data-reveal><span>01</span><h3>Curadoria real</h3><p>Peças escolhidas com olhar de torcedor.</p></div><div class="service-item" data-reveal><span>02</span><h3>Atendimento próximo</h3><p>Fale direto com quem entende de manto.</p></div><div class="service-item" data-reveal><span>03</span><h3>Compra simples</h3><p>Escolha, mande no WhatsApp e pronto.</p></div></section>
 </main>
 <footer class="site-footer"><div class="footer-brand"><img src="{{ asset('images/logo.jpg') }}" alt="Paraíso dos Mantos"><span>Paraíso dos Mantos</span></div><p>Futebol para vestir. Histórias para guardar.</p><small>© {{ date('Y') }} Paraíso dos Mantos</small></footer>
 @endsection
