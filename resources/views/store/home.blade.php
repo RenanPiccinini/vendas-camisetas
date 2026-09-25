@@ -76,6 +76,44 @@
         <div class="manifesto-copy reveal"><span class="eyebrow">MAIS QUE UMA CAMISA</span><h2>O futebol mora<br><em>na gente.</em></h2><p>Em cada escudo, uma história. Explore os mantos selecionados, escolha seu tamanho e leve para casa a camisa que representa você.</p><div class="manifesto-meta"><span><b data-mantos-price>{{ optional($featuredMantos->first())->formatted_price ?: '—' }}</b><small>preço do manto</small></span><span><b>05</b><small>clubes na curadoria</small></span></div><a class="text-link" href="#colecao">Conheça os mantos <span>↗</span></a></div>
     </section>
 
+    <section class="story-section section-shell" id="nossa-historia">
+        <div class="story-intro reveal">
+            <span class="eyebrow">A CULTURA DO MANTO</span>
+            <h2>Não é só uma camisa.<br><em>É um pedaço do jogo.</em></h2>
+            <p>Um manto acompanha fases, jogadores, títulos e histórias que a gente conta de novo. Por isso, cada peça da nossa curadoria é escolhida para vestir a paixão dentro e fora do estádio.</p>
+            <a class="text-link" href="#colecao">Explorar a curadoria <span>↗</span></a>
+        </div>
+        <div class="story-facts">
+            <article class="story-fact"><strong>{{ str_pad($products->count(), 2, '0', STR_PAD_LEFT) }}</strong><span>clubes na coleção</span><p>Uma seleção enxuta para quem prefere escolher um manto com história.</p></article>
+            <article class="story-fact"><strong>01</strong><span>conversa para comprar</span><p>Você escolhe a peça, confirma os detalhes e fala diretamente com nossa equipe.</p></article>
+            <article class="story-fact"><strong>100%</strong><span>olhar de torcedor</span><p>Atendimento próximo, sem complicação e com atenção ao tamanho certo.</p></article>
+        </div>
+    </section>
+
+    <section class="how-section section-shell" id="como-comprar">
+        <div class="section-heading reveal"><div><span class="eyebrow">DO PRIMEIRO CLIQUE À ENTREGA</span><h2>Comprar seu manto<br><em>é simples.</em></h2></div><p>Monte sua seleção com calma. Quando estiver tudo certo, nossa equipe continua o atendimento pelo WhatsApp.</p></div>
+        <div class="steps-grid">
+            <article class="step-card"><span class="step-number">01</span><div class="step-icon">◌</div><h3>Escolha o clube</h3><p>Conheça os modelos disponíveis, veja as fotos e abra os detalhes da camisa que chamou sua atenção.</p><a href="#colecao">Ver coleção <span>↗</span></a></article>
+            <article class="step-card step-card-highlight"><span class="step-number">02</span><div class="step-icon">＋</div><h3>Defina o tamanho</h3><p>Selecione P, M, G ou GG na página do produto e adicione a quantidade desejada ao carrinho.</p><a href="#tamanhos">Consultar tamanhos <span>↓</span></a></article>
+            <article class="step-card"><span class="step-number">03</span><div class="step-icon">↗</div><h3>Finalize no WhatsApp</h3><p>Confira seu pedido, clique em finalizar e receba nossa orientação sobre pagamento e entrega.</p><a href="https://wa.me/5535998135255" target="_blank" rel="noopener">Falar com a equipe <span>↗</span></a></article>
+        </div>
+    </section>
+
+    <section class="size-care-section section-shell" id="tamanhos">
+        <div class="size-guide reveal">
+            <span class="eyebrow">PARA O MANTO CAIR BEM</span>
+            <h2>Escolha seu<br><em>tamanho.</em></h2>
+            <p>Se você já conhece a modelagem que usa, escolha o mesmo tamanho. Na dúvida, fale com a equipe antes de finalizar: ajudamos você a encontrar o caimento ideal.</p>
+            <div class="size-table" role="list" aria-label="Tamanhos disponíveis"><span role="listitem">P <small>menor</small></span><span role="listitem">M <small>regular</small></span><span role="listitem">G <small>amplo</small></span><span role="listitem">GG <small>extra</small></span></div>
+        </div>
+        <div class="care-guide">
+            <span class="eyebrow">LONGEVIDADE DO MANTO</span>
+            <h3>Cuide da sua camisa como uma peça de coleção.</h3>
+            <ul><li><b>01</b><span>Lave do avesso e prefira água fria.</span></li><li><b>02</b><span>Evite alvejante e secadora em alta temperatura.</span></li><li><b>03</b><span>Seque à sombra para preservar cores e detalhes.</span></li></ul>
+            <a class="gold-button" href="https://wa.me/5535998135255" target="_blank" rel="noopener">Tirar uma dúvida <span>↗</span></a>
+        </div>
+    </section>
+
     <section class="service-section section-shell"><div class="service-item"><span>01</span><h3>Curadoria real</h3><p>Peças escolhidas com olhar de torcedor.</p></div><div class="service-item"><span>02</span><h3>Atendimento próximo</h3><p>Fale direto com quem entende de manto.</p></div><div class="service-item"><span>03</span><h3>Compra simples</h3><p>Escolha, mande no WhatsApp e pronto.</p></div></section>
 </main>
 <footer class="site-footer"><div class="footer-brand"><img src="{{ asset('images/logo.jpg') }}" alt="Paraíso dos Mantos"><span>Paraíso dos Mantos</span></div><p>Futebol para vestir. Histórias para guardar.</p><small>© {{ date('Y') }} Paraíso dos Mantos</small></footer>

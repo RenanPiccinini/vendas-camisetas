@@ -22,6 +22,7 @@
             <nav class="main-nav" aria-label="Navegação principal">
                 <a href="{{ route('store.home') }}#colecao">Coleção</a>
                 <a href="{{ route('store.home') }}#manifesto">Nossa essência</a>
+                <a href="{{ route('store.home') }}#como-comprar">Como comprar</a>
                 @auth
                     <a href="{{ route('admin.products.index') }}">Gerenciador</a>
                 @else
