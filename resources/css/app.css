@@ -7,7 +7,7 @@
 
 /* Motion system for the public storefront */
 [data-page="store-home"].motion-ready .reveal,[data-page="store-home"].motion-ready [data-reveal]{animation:none;opacity:0;transform:translate3d(0,24px,0);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.75,.25,1)}
-[data-page="store-home"] .is-visible{opacity:1;transform:none}
+[data-page="store-home"].motion-ready .reveal.is-visible,[data-page="store-home"].motion-ready [data-reveal].is-visible{opacity:1;transform:none}
 [data-page="store-home"] [data-reveal]:nth-child(2){transition-delay:.1s}
 [data-page="store-home"] [data-reveal]:nth-child(3){transition-delay:.2s}
 [data-page="store-home"].motion-ready .hero-copy{opacity:0;transform:translate3d(-20px,18px,0);transition:opacity .9s ease,transform .9s cubic-bezier(.2,.75,.25,1)}
